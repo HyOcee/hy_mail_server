@@ -13,13 +13,13 @@ const db = new Client({
     database: 'my_mail'
 })
 
-db.connect(err => {
-    if (err){
-        console.error('connection error', err.stack)
-    } else {
-        console.log('Connected to database')
-    }
-});
+// db.connect(err => {
+//     if (err){
+//         console.error('connection error', err.stack)
+//     } else {
+//         console.log('Connected to database')
+//     }
+// });
 
 const app = express();
 
@@ -46,6 +46,11 @@ app.post('/signin', (req, res) => {
                 console.log(err.message)
                 res.json(3)
             })
+})
+
+app.post('/test',(req,res) =>{
+    console.log('working')
+    res.json('well done Ose')
 })
 
 
