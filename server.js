@@ -48,7 +48,7 @@ app.post('/signin', (req, res) => {
             })
 })
 
-app.post('/test',(req,res) =>{
+app.get('/test',(req,res) =>{
     console.log('working')
     res.json('well done Ose')
 })
