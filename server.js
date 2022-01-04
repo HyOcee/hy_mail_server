@@ -1,9 +1,8 @@
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const {Client} = require('pg');
 const cors = require('cors');
-
-
 
 const db = new Client({
     host: 'localhost',
@@ -29,6 +28,11 @@ app.use(express.static(__dirname+"/public"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}))
 
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('<h1>This is a test application</h1>')
+})
 
 app.post('/signin', (req, res) => {
     console.log('signin api accessed')
@@ -155,7 +159,6 @@ app.delete('/delete', (req,res) => {
 })
 
 
-var PORT = process.env.PORT || 3000;
 app.listen((PORT), () => {
     console.log(`app is running on port ${PORT}`);
 })
