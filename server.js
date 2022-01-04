@@ -3,22 +3,23 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {Client} = require('pg');
 const cors = require('cors');
+const uri = process.env.MONGODB_URI;
 
 const db = new Client({
-    host: 'localhost',
-    user: 'postgres',
+    host: 'ec2-107-21-146-133.compute-1.amazonaws.com',
+    user: 'avzeyuvixuramm',
     port: '5432',
-    password: '0000',
-    database: 'my_mail'
+    password: '0d2c8854500a55dd310bfc48ca4a561ebb0f78fcc455e77e8d91f36160dd4853',
+    database: 'descnkj5p3b9qi'
 })
 
-// db.connect(err => {
-//     if (err){
-//         console.error('connection error', err.stack)
-//     } else {
-//         console.log('Connected to database')
-//     }
-// });
+db.connect(err => {
+    if (err){
+        console.error('connection error', err.stack)
+    } else {
+        console.log('Connected to database')
+    }
+});
 
 const app = express();
 
