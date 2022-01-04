@@ -155,7 +155,7 @@ app.delete('/delete', (req,res) => {
 })
 
 
-port = 3000;
-app.listen((port), () => {
+var PORT = process.env.PORT || 3000;
+app.listen((PORT), () => {
     console.log(`app is running on port ${port}`);
 })
