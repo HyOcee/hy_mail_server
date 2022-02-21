@@ -1,35 +1,28 @@
 require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
-const {Client} = require('pg');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const uri = process.env.MONGODB_URI;
-
-const db = new Client({
-    host: 'ec2-107-21-146-133.compute-1.amazonaws.com',
-    user: 'avzeyuvixuramm',
-    port: '5432',
-    password: '0d2c8854500a55dd310bfc48ca4a561ebb0f78fcc455e77e8d91f36160dd4853',
-    database: 'descnkj5p3b9qi'
-})
-
-db.connect(err => {
-    if (err){
-        console.error('connection error', err.stack)
-    } else {
-        console.log('Connected to database')
-    }
-});
 
 const app = express();
 
 app.use(cors())
 app.use(express.static(__dirname+"/public"));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}))
 
 const PORT = process.env.PORT || 3000;
+
+const MONGODB_URI = 'mongodb+srv://hyocee:0000@hy-mail.xvsre.mongodb.net/hymail?retryWrites=true&w=majority';
+
+mongoose.connect(MONGODB_URI || 'mongodb://localhost/hymail',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+mongoose.connection.on('connected', () => {
+    console.log('Mongoose is connected');
+})
 
 app.get('/', (req, res) => {
     res.send('<h1>This is a test application</h1>')
