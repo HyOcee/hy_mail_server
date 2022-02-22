@@ -3,19 +3,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { response } = require('express');
 
 const app = express();
 
 app.use(cors())
-app.use(express.static(__dirname+"/public"));
+app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 
 const PORT = process.env.PORT || 3000;
 
 const MONGODB_URI = 'mongodb+srv://hyocee:0000@hy-mail.xvsre.mongodb.net/hymail?retryWrites=true&w=majority';
 
-mongoose.connect(MONGODB_URI || 'mongodb://localhost/hymail',{
+mongoose.connect(MONGODB_URI || 'mongodb://localhost/hymail', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -25,28 +26,29 @@ mongoose.connection.on('connected', () => {
 })
 
 app.get('/', (req, res) => {
+    console.log('api accessed')
     res.send('<h1>This is a test application</h1>')
 })
 
 app.post('/signin', (req, res) => {
     console.log('signin api accessed')
     db.query(`SELECT password FROM users WHERE username = '${req.body.username}'`)
-            .then(response => {
-                if(response.rows[0].password === req.body.password){
-                    console.log(`access granted 1`)
-                    res.json(1)
-                } else {
-                    console.log(`wrong password 2`)
-                    res.json(2)
-                }
-            })
-            .catch(err => {
-                console.log(err.message)
-                res.json(3)
-            })
+        .then(response => {
+            if (response.rows[0].password === req.body.password) {
+                console.log(`access granted 1`)
+                res.json(1)
+            } else {
+                console.log(`wrong password 2`)
+                res.json(2)
+            }
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.json(3)
+        })
 })
 
-app.get('/test',(req,res) =>{
+app.get('/test', (req, res) => {
     console.log('working')
     res.json('well done Ose')
 })
@@ -54,7 +56,7 @@ app.get('/test',(req,res) =>{
 
 
 app.post('/signup', (req, res) => {
-    const {firstName, lastName, username, password} = req.body;
+    const { firstName, lastName, username, password } = req.body;
     db.query(`INSERT INTO users (firstname, lastname, username, password)
         VALUES ('${firstName}', '${lastName}', '${username}', '${password}')`)
         .then(response => {
@@ -68,20 +70,20 @@ app.post('/signup', (req, res) => {
         })
 })
 
-app.post('/mails', (req,res) => { 
-    console.log(`getting mails for ${req.body.username}`)   
-     db.query(`SELECT * FROM mails WHERE receiver = '${req.body.username}' ORDER BY mailid`)
+app.post('/mails', (req, res) => {
+    console.log(`getting mails for ${req.body.username}`)
+    db.query(`SELECT * FROM mails WHERE receiver = '${req.body.username}' ORDER BY mailid`)
         .then(response => res.json(response.rows))
         .catch(err => {
             console.log(`Error getting mails; ${err}`)
             res.json(false)
         })
-    })
+})
 
-app.put('/sendmail',(req,res) => {
-    const { sender, receiver, mailContent, starred, read, time} = req.body;
-    console.log(`sending mail from ${sender} to ${receiver}`)   
-     db.query(`INSERT INTO mails (sender, receiver, mailContent, starred, read, time)
+app.put('/sendmail', (req, res) => {
+    const { sender, receiver, mailContent, starred, read, time } = req.body;
+    console.log(`sending mail from ${sender} to ${receiver}`)
+    db.query(`INSERT INTO mails (sender, receiver, mailContent, starred, read, time)
         VALUES ('${sender}', '${receiver}', '${mailContent}', '${starred}', 
         '${read}', '${time}') `)
         .then(response => {
@@ -94,10 +96,10 @@ app.put('/sendmail',(req,res) => {
 })
 
 app.put('/changestar', (req, res) => {
-  const {mailID} = req.body;
+    const { mailID } = req.body;
     db.query(`SELECT starred FROM mails WHERE mailid = ${mailID}`)
         .then(data => {
-            if(data.rows[0].starred === false){
+            if (data.rows[0].starred === false) {
                 db.query(`UPDATE mails SET starred = true WHERE mailid = ${mailID}`)
                 res.json(1)
                 console.log('now starred')
@@ -111,17 +113,17 @@ app.put('/changestar', (req, res) => {
             console.log(err.message)
             res.json(3)
         })
-    .catch(err => {
-        console.log(`error 2 starring`)
-        res.json(false)
-    })  
+        .catch(err => {
+            console.log(`error 2 starring`)
+            res.json(false)
+        })
 })
 
 app.put('/changeread', (req, res) => {
-     const {mailID} = req.body;
+    const { mailID } = req.body;
     db.query(`SELECT read FROM mails WHERE mailid = ${mailID}`)
         .then(data => {
-            if(data.rows[0].read === false){
+            if (data.rows[0].read === false) {
                 db.query(`UPDATE mails SET read = true WHERE mailid = ${mailID}`)
                 res.json(1)
                 console.log('now read')
@@ -135,21 +137,27 @@ app.put('/changeread', (req, res) => {
             console.log(err.message)
             res.json(3)
         })
-    .catch(err => {
-        console.log(`error 2 starring`)
-        res.json(false)
-    })   
+        .catch(err => {
+            console.log(`error 2 starring`)
+            res.json(false)
+        })
 })
 
-app.delete('/delete', (req,res) => {
-    const {mailID, username} = req.body;
+app.delete('/delete', (req, res) => {
+    const { mailID, username } = req.body;
     console.log(`deleting mail for ${username}`)
     db.query(` DELETE FROM mails WHERE mailid = '${mailID}'`)
-    .then(response => res.json(true))
-    .catch(err => {
-        console.log(`error deleting mail`)
-        res.json(false)
-    })
+        .then(response => res.json(true))
+        .catch(err => {
+            console.log(`error deleting mail`)
+            res.json(false)
+        })
+})
+
+app.post('/get-some', (req, res) => {
+    const { name, age } = req.body;
+    console.log('gave some')
+    res.json(`${name} you're the real OG, but I think you're lying about your age`)
 })
 
 
